@@ -1,18 +1,55 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 public class gridGenerator : MonoBehaviour
 {
-    public float size = 1f;
+    public int size = 1;
     public int minX = -25;
     public int maxX = 25;
     public int minZ = -25;
     public int maxZ = 25;
+    public GameObject player;
+    public List<GameObject> characters;
+    public Vector3[] charLocations;
+    Collider[] results;
 
 
-    void start()
+    void Start()
     {
+        InvokeRepeating("locateGrid", 0, 1);
+        characters[0] = player;
+    }
 
-        InvokeRepeating("locateGrid", 0f, 1.0f);
+    //TODO: make a maximum distance from the player that this can go to avoid infinite loops
+    //TODO: could remove checks inside of known area
+    void locateGrid()
+    {
+        //check a box of 3 squares around each character, add characters in those areas to the list of
+        //current characters
+        Vector3 boxSize = new Vector3(size * 3, size * 3, size * 3);
+        bool searching = true;
+        while (searching)
+        {
+            foreach (GameObject character in characters)
+            {
+                Physics.OverlapBoxNonAlloc(transform.position, boxSize, results);
+                if (results.Length != 0)
+                {
+                    foreach (Collider newChar in results)
+                    {
+                        characters.Add(newChar.gameObject);
+                    }
+                    //need to re-search the list if new chars added
+                    break;
+                }
+            }
+            //if finished searching all chars with no new ones, end check
+            searching = false;
+        }
+        Debug.Log("balls");
+        //charLocations. (player.transform.position);
+        this.transform.position = charLocations[1];
     }
 
     public Vector3 GetNearestPointOnGrid(Vector3 position)
@@ -47,11 +84,10 @@ public class gridGenerator : MonoBehaviour
         }
     }
 
-    public void locateGrid()
+
+
+    void Update()
     {
-        Vector3 test1 = new Vector3(0, 0, 0);
-        Vector3 test2 = new Vector3(10, 0, 10);
-        Vector3[] charLocations = { test1, test2 };
-        this.transform.position = charLocations[1];
+
     }
 }
