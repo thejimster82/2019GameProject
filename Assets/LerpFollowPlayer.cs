@@ -18,7 +18,15 @@ public class LerpFollowPlayer : MonoBehaviour
     {
         if (target)
         {
-            transform.position = Vector3.Lerp(transform.position, target.transform.position + offset, interpVelocity);
+            if (target.GetComponent<playerState>().inCombat) //movement in combat
+            {
+
+            }
+            else
+            { //movement out of combat
+                transform.position = Vector3.Lerp(transform.position, target.transform.position + offset, interpVelocity);
+            }
         }
+
     }
 }

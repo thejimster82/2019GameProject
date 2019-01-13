@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using world;
 
 public class gridGenerator : MonoBehaviour
 {
@@ -15,23 +16,33 @@ public class gridGenerator : MonoBehaviour
     public Collider[] results = new Collider[20];
     public bool searching = true;
     public bool inCombat;
+    public List<worldLocation> objectLocations = new List<worldLocation>();
+    public LayerMask affectsCombat;
 
     public void Start()
     {
+        //set up layers which are checked for combat affecting grid locations
+        affectsCombat = LayerMask.GetMask("inWorld");
         //could add multiple players for local coop instead
         characters.Add(player);
         //TODO: find a good time interval to run this (very fast for testing currently)
         InvokeRepeating("locateGrid", 0, 0.01f);
     }
-
     //TODO: make a maximum distance from the player that this can go to avoid infinite loops
     //TODO: could remove checks inside of known area
     void locateGrid()
     {
+        foreach (worldLocation location in objectLocations)
+        {
+            Debug.Log(location.x + " " + location.z);
+        }
         //use this to reset grid size each round of checks
         maxX = 25;
         maxZ = 25;
         //locates grid at player when not in combat, takes other characters into account when in combat
+        //check player's inCombat variable
+        //this should allow for multiple players
+        inCombat = player.GetComponent<playerState>().inCombat;
         if (inCombat)
         {
             this.transform.position = GetNearestPointOnGrid(player.transform.position);
@@ -43,13 +54,13 @@ public class gridGenerator : MonoBehaviour
                 foreach (GameObject character in characters)
                 {
                     Vector3 boxSize = new Vector3(size * distance, size * distance, size * distance);
-                    Collider[] hitColliders = Physics.OverlapBox(transform.position, boxSize);
-                    Debug.Log("results" + results);
+                    Collider[] hitColliders = Physics.OverlapBox(transform.position, boxSize, Quaternion.identity, affectsCombat);
                     foreach (Collider newChar in hitColliders)
                     {
                         if (!characters.Contains(newChar.gameObject))
                         {
                             characters.Add(newChar.gameObject);
+                            objectLocations.Add(transformToGridIndices(newChar.gameObject.transform.position));
                         }
                     }
                     //need to re-search the list if new chars added
@@ -76,14 +87,10 @@ public class gridGenerator : MonoBehaviour
             }
         }
         else
-        {
-            //clear char checking array
-            characters.Clear();
-            characters.Add(player);
-            this.transform.position = GetNearestPointOnGrid(player.transform.position);
+        {//do every second while not in combat
+
         }
     }
-
     public Vector3 GetNearestPointOnGrid(Vector3 position)
     {
         position -= transform.position;
@@ -101,7 +108,28 @@ public class gridGenerator : MonoBehaviour
 
         return result;
     }
+    public Vector3 transformToGridspace(Vector3 position)
+    {
 
+        int xCount = Mathf.RoundToInt(position.x / size);
+        int zCount = Mathf.RoundToInt(position.z / size);
+
+        Vector3 result = new Vector3(
+            (float)xCount * size,
+            position.y,
+            (float)zCount * size);
+
+        return result;
+    }
+    public worldLocation transformToGridIndices(Vector3 position)
+    {
+        worldLocation place = new worldLocation();
+        int xCount = Mathf.RoundToInt(position.x / size);
+        int zCount = Mathf.RoundToInt(position.z / size);
+        place.x = xCount;
+        place.z = zCount;
+        return place;
+    }
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
@@ -118,7 +146,4 @@ public class gridGenerator : MonoBehaviour
         //Gizmos.DrawCube(transform.position, boxSize);
     }
 
-    void Update()
-    {
-    }
 }
