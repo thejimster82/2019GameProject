@@ -4,32 +4,33 @@ using UnityEngine;
 
 public class playerAttack : MonoBehaviour
 {
-    private CharacterController mover;
-    public GameObject atkObject;
+    private playerMovement mover;
+    private wepnStats wepnStats;
     private Vector3 atkLoc;
-    public float atkDistance;
+    public GameObject wepn;
     public float atkTime;
-    public float atkLength;
+
     // Start is called before the first frame update
     void Start()
     {
-        mover = GetComponentInParent(typeof(CharacterController)) as CharacterController;
-        atkObject.SetActive(false);
+        mover = GetComponentInParent(typeof(playerMovement)) as playerMovement;
+        wepnStats = wepn.GetComponent(typeof(wepnStats)) as wepnStats;
     }
 
     // Update is called once per frame
     void Update()
     {
-        atkObject.transform.localPosition = mover.velocity.normalized * atkDistance;
+        wepn.transform.localPosition = mover.playerDir * wepnStats.atkDistance;
+
         //atkObject.transform.rotation =
         if (Input.GetMouseButtonDown(0))
         {
-            atkObject.SetActive(true);
-            atkTime = atkLength;
+            wepn.SetActive(true);
+            atkTime = wepnStats.atkLength;
         }
         if (atkTime <= 0)
         {
-            atkObject.SetActive(false);
+            wepn.SetActive(false);
         }
         atkTime -= Time.deltaTime;
     }

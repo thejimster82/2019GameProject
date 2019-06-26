@@ -5,7 +5,7 @@ using static System.Math;
 using static UnityEngine.Time;
 public class playerMovement : MonoBehaviour
 {
-    public CharacterController mover;
+    public CharacterController ctrlr;
     public playerAttack atker;
     // private InputDevice inDevice;
     public float xMove = 0.0f;
@@ -16,15 +16,17 @@ public class playerMovement : MonoBehaviour
     public float maxTime = 0.5f;
     public float xProportion = 1.0f;
     public float yProportion = 1.0f;
+    public Vector3 playerDir;
     void Awake()
     {
         //inDevice = InputManager.ActiveDevice;
-        mover = GetComponentInParent(typeof(CharacterController)) as CharacterController;
+        ctrlr = GetComponentInParent(typeof(CharacterController)) as CharacterController;
         atker = GetComponentInParent(typeof(playerAttack)) as playerAttack;
-        mover.detectCollisions = false;
+        ctrlr.detectCollisions = false;
     }
     void Update()
     {
+        playerDir = ctrlr.velocity.normalized;
         xProportion = 1f;
         yProportion = 1f;
         //TODO: change these to be event-based
@@ -64,7 +66,7 @@ public class playerMovement : MonoBehaviour
         }
         float xMoveFloat = -50 * maxRunSpeed * xProportion * xMove;
         float yMoveFloat = -50 * maxRunSpeed * yProportion * yMove;
-        Vector3 fullMove = Vector3.Lerp(mover.velocity, new Vector3(xMoveFloat * Time.deltaTime, 0, yMoveFloat * Time.deltaTime), 0.1f);
+        Vector3 fullMove = Vector3.Lerp(ctrlr.velocity, new Vector3(xMoveFloat * Time.deltaTime, 0, yMoveFloat * Time.deltaTime), 0.1f);
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -75,7 +77,7 @@ public class playerMovement : MonoBehaviour
                 atker.atkTime = 0;
             }
         }
-        mover.SimpleMove(fullMove);
+        ctrlr.SimpleMove(fullMove);
         dashTime -= Time.deltaTime;
     }
 }
