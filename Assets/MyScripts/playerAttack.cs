@@ -6,23 +6,17 @@ public class playerAttack : MonoBehaviour
 {
     private playerMovement mover;
     private wepnStats wepnStats;
-
-    private Vector3 atkLoc;
-    public GameObject wepn;
-    public float atkTime;
+    public GameObject wepn1;
+    public GameObject equippedWepn;
     private bool isAttacking = false;
-    private string prevAtkName;
-    public string atkName;
-    private atkStats currentAtk;
-    public Dictionary<string, atkStats> atkTable = new Dictionary<string, atkStats>();
+    private atkStats currAtk;
+    private Dictionary<string, atkStats> atkTable = new Dictionary<string, atkStats>();
 
     // Start is called before the first frame update
     void Start()
     {
         mover = GetComponentInParent(typeof(playerMovement)) as playerMovement;
-        wepnStats = wepn.GetComponent(typeof(wepnStats)) as wepnStats;
-        //TODO: make a wrapper for all weapon-related scripts so we can just call equipWepn() and get everything
-        atkTable = (wepn.GetComponent(typeof(wepnAttacks)) as wepnAttacks).getAtks();
+        equipWepn(wepn1);
     }
 
     // Update is called once per frame
@@ -30,7 +24,19 @@ public class playerAttack : MonoBehaviour
     {
         if (Input.GetMouseButtonUp(0))
         {
-            StartCoroutine(Attack("melee1"));
+            if (!isAttacking)
+            {
+                StartCoroutine(Attack("melee", "atk1"));
+            }
+            else if (isAttacking && currAtk.getAtkName() == "atk1")
+            {
+                StartCoroutine(Attack("melee", "atk2"));
+            }
+            else if (isAttacking && currAtk.getAtkName() == "atk2")
+            {
+                StartCoroutine(Attack("melee", "atk3"));
+            }
+
         }
     }
 
@@ -39,23 +45,32 @@ public class playerAttack : MonoBehaviour
         return isAttacking;
     }
 
-    public IEnumerator Attack(string atkName)
+    public IEnumerator Attack(string type, string atkName)
     {
-        currentAtk = atkTable[atkName];
         isAttacking = true;
-        mover.setMovement(currentAtk.moveSpeedWhileAtking);
-        wepn.transform.localPosition = mover.playerDir * currentAtk.atkDistance;
-        wepn.transform.rotation = Quaternion.LookRotation(mover.playerDir);
+        currAtk = atkTable[atkName];
+        mover.setMovement(currAtk.moveSpeedWhileAtking);
+        equippedWepn.transform.rotation = Quaternion.LookRotation(mover.getPlayerDir());
+        equippedWepn.transform.position = mover.getPlayerDir() * currAtk.atkDistance + mover.transform.position;
 
-        yield return new WaitForSeconds(currentAtk.hitDelay);
+        yield return new WaitForSeconds(currAtk.hitDelay);
 
-        wepn.SetActive(true);
+        GameObject currAtkObj = Instantiate(currAtk.atkObject, equippedWepn.transform.position, equippedWepn.transform.rotation);
+        currAtkObj.SetActive(true);
+        currAtkObj.transform.parent = gameObject.transform;
 
-        yield return new WaitForSeconds(currentAtk.atkLength);
+        yield return new WaitForSeconds(currAtk.atkLength);
 
         mover.setMovement(mover.defaultMoveSpeed);
-        wepn.SetActive(false);
+        Destroy(currAtkObj);
         isAttacking = false;
+    }
+
+    private void equipWepn(GameObject wepn)
+    {
+        wepnStats = wepn.GetComponent(typeof(wepnStats)) as wepnStats;
+        atkTable = (wepn.GetComponent(typeof(wepnAttacks)) as wepnAttacks).getAtks();
+        equippedWepn = wepn;
     }
 
 }

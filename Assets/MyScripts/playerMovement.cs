@@ -18,7 +18,7 @@ public class playerMovement : MonoBehaviour
     public float maxTime = 0.5f;
     private float xProportion = 1.0f;
     private float yProportion = 1.0f;
-    public Vector3 playerDir;
+    private Vector3 playerDir;
     private bool movementEnabled = true;
     void Awake()
     {
@@ -29,9 +29,6 @@ public class playerMovement : MonoBehaviour
     }
     void Update()
     {
-        playerDir = ctrlr.velocity.normalized;
-        xProportion = 1f;
-        yProportion = 1f;
         //TODO: change these to be event-based
         if (movementEnabled == true)
         {
@@ -67,7 +64,8 @@ public class playerMovement : MonoBehaviour
             xMove = 0.0f;
         }
 
-
+        xProportion = 1f;
+        yProportion = 1f;
         if (yMove != 0)
         {
             xProportion = (float)Sin(Abs(xMove) / Abs(yMove));
@@ -105,5 +103,10 @@ public class playerMovement : MonoBehaviour
     public void setMovement(float speed)
     {
         moveSpeed = speed;
+    }
+
+    public Vector3 getPlayerDir()
+    {
+        return ctrlr.velocity.normalized;
     }
 }

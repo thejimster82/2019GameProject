@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class wepnAttacks : MonoBehaviour
 {
-    public Dictionary<string, atkStats> atkTable = new Dictionary<string, atkStats>();
+    private Dictionary<string, atkStats> atkTable = new Dictionary<string, atkStats>();
     public List<atkStats> atkStatsList = new List<atkStats>();
     public atkStats getAtk(string atkName)
     {

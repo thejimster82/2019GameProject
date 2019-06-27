@@ -8,4 +8,17 @@ public class atkStats : MonoBehaviour
     public float atkLength;
     public float hitDelay;
     public float moveSpeedWhileAtking;
+    public GameObject atkObject;
+    public string atkName;
+
+    void Awake()
+    {
+        atkName = gameObject.name;
+    }
+
+    public string getAtkName()
+    {
+        return atkName;
+    }
 }
+
