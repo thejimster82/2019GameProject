@@ -12,11 +12,14 @@ public class playerMovement : MonoBehaviour
     public float yMove = 0.0f;
     public float dashSpeed = 4.0f;
     public float maxRunSpeed = 20.0f;
+    private float moveSpeed = 1.0f;
+    public float defaultMoveSpeed = 1.0f;
     public float dashTime = 0.5f;
     public float maxTime = 0.5f;
-    public float xProportion = 1.0f;
-    public float yProportion = 1.0f;
+    private float xProportion = 1.0f;
+    private float yProportion = 1.0f;
     public Vector3 playerDir;
+    private bool movementEnabled = true;
     void Awake()
     {
         //inDevice = InputManager.ActiveDevice;
@@ -30,31 +33,40 @@ public class playerMovement : MonoBehaviour
         xProportion = 1f;
         yProportion = 1f;
         //TODO: change these to be event-based
-        if (Input.GetKey(KeyCode.W))
+        if (movementEnabled == true)
         {
-            yMove = 1.0f;
-        }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            yMove = -1.0f;
+            if (Input.GetKey(KeyCode.W))
+            {
+                yMove = moveSpeed;
+            }
+            else if (Input.GetKey(KeyCode.S))
+            {
+                yMove = -moveSpeed;
+            }
+            else
+            {
+                yMove = 0.0f;
+            }
+
+            if (Input.GetKey(KeyCode.D))
+            {
+                xMove = moveSpeed;
+            }
+            else if (Input.GetKey(KeyCode.A))
+            {
+                xMove = -moveSpeed;
+            }
+            else
+            {
+                xMove = 0.0f;
+            }
         }
         else
         {
             yMove = 0.0f;
-        }
-
-        if (Input.GetKey(KeyCode.D))
-        {
-            xMove = 1.0f;
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            xMove = -1.0f;
-        }
-        else
-        {
             xMove = 0.0f;
         }
+
 
         if (yMove != 0)
         {
@@ -70,14 +82,28 @@ public class playerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (dashTime <= 0)
+            if (dashTime <= 0 && !atker.getAtkStatus())
             {
                 fullMove = new Vector3(-1 * xMove * dashSpeed * maxRunSpeed, 0, -1 * yMove * dashSpeed * maxRunSpeed);
                 dashTime = maxTime;
-                atker.atkTime = 0;
+                //atker.atkTime = 0;
             }
         }
+        //TODO: utilize move instead of simplemove and fix slopes/gravity
         ctrlr.SimpleMove(fullMove);
         dashTime -= Time.deltaTime;
+    }
+
+    public void pauseMovement()
+    {
+        movementEnabled = false;
+    }
+    public void resumeMovement()
+    {
+        movementEnabled = true;
+    }
+    public void setMovement(float speed)
+    {
+        moveSpeed = speed;
     }
 }

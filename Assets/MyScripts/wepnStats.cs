@@ -4,17 +4,6 @@ using UnityEngine;
 
 public class wepnStats : MonoBehaviour
 {
-    // Start is called before the first frame update
-    public float atkDistance;
-    public float atkLength;
-    void Start()
-    {
+    public float dmg;
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 }
