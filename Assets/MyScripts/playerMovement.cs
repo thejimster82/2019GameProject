@@ -20,6 +20,8 @@ public class playerMovement : MonoBehaviour
     private float yProportion = 1.0f;
     private Vector3 playerDir;
     private bool movementEnabled = true;
+    private bool rotationEnabled = true;
+    private bool dashingEnabled = true;
     void Awake()
     {
         //inDevice = InputManager.ActiveDevice;
@@ -35,10 +37,12 @@ public class playerMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.W))
             {
                 yMove = moveSpeed;
+                playerDir = ctrlr.velocity.normalized;
             }
             else if (Input.GetKey(KeyCode.S))
             {
                 yMove = -moveSpeed;
+                playerDir = ctrlr.velocity.normalized;
             }
             else
             {
@@ -48,10 +52,12 @@ public class playerMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.D))
             {
                 xMove = moveSpeed;
+                playerDir = ctrlr.velocity.normalized;
             }
             else if (Input.GetKey(KeyCode.A))
             {
                 xMove = -moveSpeed;
+                playerDir = ctrlr.velocity.normalized;
             }
             else
             {
@@ -80,7 +86,7 @@ public class playerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (dashTime <= 0 && !atker.getAtkStatus())
+            if (dashTime <= 0 && dashingEnabled)
             {
                 fullMove = new Vector3(-1 * xMove * dashSpeed * maxRunSpeed, 0, -1 * yMove * dashSpeed * maxRunSpeed);
                 dashTime = maxTime;
@@ -104,9 +110,30 @@ public class playerMovement : MonoBehaviour
     {
         moveSpeed = speed;
     }
-
     public Vector3 getPlayerDir()
     {
-        return ctrlr.velocity.normalized;
+        return playerDir;
+    }
+    public void pauseRotation()
+    {
+        rotationEnabled = false;
+    }
+    public void resumeRotation()
+    {
+        rotationEnabled = true;
+    }
+    public void pauseDashing()
+    {
+        dashingEnabled = false;
+    }
+    public void resumeDashing()
+    {
+        dashingEnabled = true;
+    }
+    public void nudgePlayer(float amt)
+    {
+        //TODO: make nudging actually perform the correct movement
+        Vector3 newMovement = Vector3.Lerp(ctrlr.velocity, ctrlr.velocity * amt, 0.1f);
+        ctrlr.SimpleMove(ctrlr.velocity * amt);
     }
 }

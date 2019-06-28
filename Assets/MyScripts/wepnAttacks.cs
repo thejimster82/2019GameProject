@@ -20,7 +20,7 @@ public class wepnAttacks : MonoBehaviour
     {
         for (int i = 0; i < atkStatsList.Count; i++)
         {
-            atkTable.Add(atkStatsList[i].gameObject.name, atkStatsList[i]);
+            atkTable.Add(atkStatsList[i].getAtkName(), atkStatsList[i]);
         }
     }
 }
