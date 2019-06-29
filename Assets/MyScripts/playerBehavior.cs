@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class playerBehavior : MonoBehaviour
 {
+    public int playerHealth = 100;
+    public gameCamera gameCam;
     // Start is called before the first frame update
     void Start()
     {
@@ -33,9 +35,10 @@ public class playerBehavior : MonoBehaviour
 		// myRigidBody.isKinematic = true;
 		// GameManager.RegisterPlayerDeath ();
 		// gameObject.GetComponent<Collider> ().enabled = false;
-		// GameCamera.ToggleShake (0.3f);
+		gameCam.ToggleShake (0.3f);
 		// Vector3 pos = animator.transform.position;
 		// pos.y = 0.2f;
 		// animator.transform.position = pos;
+        playerHealth -= 10;
 	}
 }

@@ -41,7 +41,6 @@ public class PlayerBehavior : MonoBehaviour {
 			break;
 			case PlayerWeaponType.PISTOL:
 				if (Input.GetMouseButtonDown (0) && attackTimer.IsFinished()) {
-
 					Attack();
 				}
 			break;
