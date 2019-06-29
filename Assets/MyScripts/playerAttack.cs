@@ -46,6 +46,7 @@ public class playerAttack : MonoBehaviour
                 currRoutine = StartCoroutine(Attack("melee", "atk3"));
                 Debug.Log(3);
             }
+            //TODO: asdasd
             // else
             // {
             //     //restart loop
@@ -68,7 +69,9 @@ public class playerAttack : MonoBehaviour
         mover.pauseDashing();
         isAttacking = true;
         currAtk = atkTable[atkName];
-        mover.nudgePlayer(currAtk.nudgeAmt);
+        if(currAtk.nudge){
+            mover.nudgePlayer(currAtk.nudgeAmt);
+        }
         mover.setMovement(currAtk.moveSpeedWhileAtking);
         equippedWepn.transform.rotation = Quaternion.LookRotation(mover.getPlayerDir());
         equippedWepn.transform.position = mover.getPlayerDir() * currAtk.atkDistance + mover.transform.position;

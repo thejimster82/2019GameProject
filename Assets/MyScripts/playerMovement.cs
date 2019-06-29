@@ -31,7 +31,7 @@ public class playerMovement : MonoBehaviour
     }
     void Update()
     {
-        //TODO: change these to be event-based
+        // TODO: this
         if (movementEnabled == true)
         {
             if (Input.GetKey(KeyCode.W))

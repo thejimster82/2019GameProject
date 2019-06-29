@@ -8,6 +8,7 @@ public class atkStats : MonoBehaviour
     public float atkLength;
     public float hitDelay;
     public float moveSpeedWhileAtking;
+    public bool nudge;
     public float nudgeAmt;
     public GameObject atkObject;
     public string getAtkName()
