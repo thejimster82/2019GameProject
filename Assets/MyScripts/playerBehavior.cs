@@ -27,7 +27,6 @@ public class playerBehavior : MonoBehaviour
 		// }
 	}
 
-    
 	public void DamagePlayer(){
 		// animator.SetBool ("Dead", true);
 		// animator.transform.parent = null;

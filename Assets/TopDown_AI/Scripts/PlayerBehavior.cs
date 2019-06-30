@@ -66,8 +66,6 @@ public class PlayerBehavior : MonoBehaviour {
 		animator.transform.position = pos;
 	}
 	void UpdateAim(){
-
-
 		Vector3 mousePos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 		mousePos.y = transform.position.y;
 		mousePointer.transform.position = mousePos;

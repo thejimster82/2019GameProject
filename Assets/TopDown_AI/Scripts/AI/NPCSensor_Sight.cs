@@ -24,23 +24,19 @@ public class NPCSensor_Sight : NPCSensor_Base {
 	}
 	bool targetSpotted=false;
 	void GetTargetInSight(){
-		Collider[] overlapedObjects= Physics.OverlapSphere (transform.position, SIGHT_MAX_DISTANCE);
-	
-
-
-	
-		for (int i=0; i<overlapedObjects.Length; i++) {
-			Vector3 direction = overlapedObjects [i].transform.position - transform.position;
+		Collider[] overlappedObjects= Physics.OverlapSphere (transform.position, SIGHT_MAX_DISTANCE);
+		for (int i=0; i<overlappedObjects.Length; i++) {
+			Vector3 direction = overlappedObjects [i].transform.position - transform.position;
 			float objAngle = Vector3.Angle (direction, transform.forward);
-			if (overlapedObjects [i].tag == "Player") { 
-				if ( objAngle < SIGHT_DIRECT_ANGLE && TargetInSight (overlapedObjects [i].transform, SIGHT_MAX_DISTANCE )) {
-					npcBase.SetTargetPos(overlapedObjects [i].transform.position);
+			if (overlappedObjects [i].tag == "Player") { 
+				if ( objAngle < SIGHT_DIRECT_ANGLE && TargetInSight (overlappedObjects [i].transform, SIGHT_MAX_DISTANCE )) {
+					npcBase.SetTargetPos(overlappedObjects [i].transform.position);
 					material.SetColor ("_Color", attackColor);	
 				}
 				else{
 					material.SetColor ("_Color", idleColor);	
 				}
-			/*	if (objAngle < SIGHT_INDIRECT_ANGLE && TargetInSight (overlapedObjects [i].transform, SIGHT_INDIRECT_DISTANCE / 2.0f)) {
+			/*	if (objAngle < SIGHT_INDIRECT_ANGLE && TargetInSight (overlappedObjects [i].transform, SIGHT_INDIRECT_DISTANCE / 2.0f)) {
 					if(!somethingSpotted){
 						lastSightTime=Time.time;
 						somethingSpotted=true;
@@ -49,7 +45,7 @@ public class NPCSensor_Sight : NPCSensor_Base {
 						return;
 					}
 
-					_lastTargetPos = overlapedObjects [i].transform.position;
+					_lastTargetPos = overlappedObjects [i].transform.position;
 					material.SetColor ("_Color", Color.magenta);
 					npcBase.SetTargetPos (_lastTargetPos);
 					lastAlertTime=Time.time;
@@ -58,9 +54,9 @@ public class NPCSensor_Sight : NPCSensor_Base {
 						alerted=true;
 					}
 				}
-				if (alerted && objAngle < SIGHT_DIRECT_ANGLE && TargetInSight (overlapedObjects [i].transform, SIGHT_DIRECT_DISTANCE / 2.0f)) {																							
+				if (alerted && objAngle < SIGHT_DIRECT_ANGLE && TargetInSight (overlappedObjects [i].transform, SIGHT_DIRECT_DISTANCE / 2.0f)) {																							
 						
-						_lastTargetPos = overlapedObjects [i].transform.position;
+						_lastTargetPos = overlappedObjects [i].transform.position;
 						material.SetColor ("_Color", Color.red);						
 						npcBase.SetTargetPos (_lastTargetPos);
 						lastTargetTime = Time.time;
