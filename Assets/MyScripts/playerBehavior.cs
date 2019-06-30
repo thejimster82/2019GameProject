@@ -1,15 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using InControl;
 
 public class playerBehavior : MonoBehaviour
 {
     public int playerHealth = 100;
     public gameCamera gameCam;
+    public bool inCombat = false;
+    public playerMovement playerMover;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+		playerMover = GetComponent<playerMovement>();
+        var InputDevice = InputManager.ActiveDevice;
     }
 
     // Update is called once per frame

@@ -410,7 +410,7 @@ public class NPC_Enemy : MonoBehaviour
     }
 
     /* #endregion */
-    ////////////////////////// PUBLIC FUNCTIONS //////////////////////////
+	////////////////////////// PUBLIC FUNCTIONS //////////////////////////
     /* #region   */
     public void SetAlertPos(Vector3 newPos)
     {

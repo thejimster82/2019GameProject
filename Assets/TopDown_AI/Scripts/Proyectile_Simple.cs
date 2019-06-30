@@ -26,7 +26,7 @@ public class Proyectile_Simple : MonoBehaviour {
 	}
 	void OnCollisionEnter(Collision collision){
 		if (collisionTarget== CollisionTarget.PLAYER  && collision.gameObject.tag == "Player") {
-			collision.gameObject.GetComponent<PlayerBehavior>().DamagePlayer();
+			collision.gameObject.GetComponent<playerBehavior>().DamagePlayer();
             
         }
         else if (collisionTarget == CollisionTarget.ENEMIES && collision.gameObject.tag == "Enemy") {
