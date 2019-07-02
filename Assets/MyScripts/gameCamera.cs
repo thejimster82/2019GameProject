@@ -10,9 +10,9 @@ public class gameCamera : MonoBehaviour
     public Vector3 offset;
     private Camera cam;
     private Vector3[] rayChecks = new Vector3[3];
-
     public float visionDistance = 2;
     public opacityController opacCtrlr;
+    //private LayerMask sceneryMask = LayerMask.GetMask("Scenery");
     // Use this for initialization
     void Start()
     {
@@ -30,17 +30,20 @@ public class gameCamera : MonoBehaviour
         {
             transform.position = Vector3.Lerp(transform.position, target.transform.position + offset, interpVelocity);
             Vector3 dirToPlayer = (target.transform.position - transform.position).normalized;
-            Collider[] transparentizeThese = Physics.OverlapCapsule(transform.position, target.transform.position - dirToPlayer * visionDistance, visionDistance);
-            Collider[] opaquenThese = Physics.OverlapCapsule(transform.position, target.transform.position - dirToPlayer * (visionDistance + 1), visionDistance + 1);
+            Collider[] transparentizeThese = Physics.OverlapCapsule(transform.position, target.transform.position, visionDistance);
+            Collider[] opaquenThese = Physics.OverlapCapsule(transform.position, target.transform.position, visionDistance + 1);
             foreach (Collider col in opaquenThese)
             {
-                if (transparentizeThese.Contains(col))
+                if (col.gameObject.tag == "Scenery")
                 {
-                    opacCtrlr.Transparentize(col.transform.gameObject);
-                }
-                else
-                {
-                    opacCtrlr.Opaquen(col.transform.gameObject);
+                    if (transparentizeThese.Contains(col))
+                    {
+                        opacCtrlr.Transparentize(col.transform.gameObject);
+                    }
+                    else
+                    {
+                        opacCtrlr.Opaquen(col.transform.gameObject);
+                    }
                 }
             }
             //Debug.DrawRay(transform.position, dirToPlayer);

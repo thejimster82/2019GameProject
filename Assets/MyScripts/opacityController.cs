@@ -19,15 +19,16 @@ public class opacityController : MonoBehaviour
 
     public void Transparentize(GameObject obj)
     {
-        if (obj.GetComponent<MeshRenderer>().material.color.a != 0.15f)
+        if (Mathf.Abs(obj.GetComponent<MeshRenderer>().material.color.a - 0.15f) > .01f)
         {
+            Debug.Log("transparentize");
             StartCoroutine(ChangeTransparency(obj, 0.15f));
         }
     }
 
     public void Opaquen(GameObject obj)
     {
-        if (obj.GetComponent<MeshRenderer>().material.color.a != 1f)
+        if (Mathf.Abs(obj.GetComponent<MeshRenderer>().material.color.a - 1) > .01f)
         {
             Debug.Log("opaquen");
             StartCoroutine(ChangeTransparency(obj, 1f));
@@ -39,12 +40,12 @@ public class opacityController : MonoBehaviour
         MeshRenderer mesh = obj.GetComponent<MeshRenderer>();
         Color Col = new Color();
         Col = mesh.material.color;
-        while (mesh.material.color.a != alpha)
+        while (Mathf.Abs(mesh.material.color.a - alpha) > .01f)
         {
             Col.a = Mathf.Lerp(Col.a, alpha, 0.1f);
             mesh.material.color = Col;
             yield return new WaitForSeconds(0.01f);
-            //Debug.Log(Col);
+
         }
         yield return new WaitForSeconds(0f);
     }
