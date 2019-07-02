@@ -19,26 +19,33 @@ public class opacityController : MonoBehaviour
 
     public void Transparentize(GameObject obj)
     {
-        StartCoroutine(ChangeTransparency(obj.GetComponent<MeshRenderer>(), 0.15f));
+        if (obj.GetComponent<MeshRenderer>().material.color.a != 0.15f)
+        {
+            StartCoroutine(ChangeTransparency(obj, 0.15f));
+        }
     }
 
     public void Opaquen(GameObject obj)
     {
-        StartCoroutine(ChangeTransparency(obj.GetComponent<MeshRenderer>(), 1f));
+        if (obj.GetComponent<MeshRenderer>().material.color.a != 1f)
+        {
+            Debug.Log("opaquen");
+            StartCoroutine(ChangeTransparency(obj, 1f));
+        }
     }
-//TODO: try sending gameobject instead of just meshrenderer
-    private IEnumerator ChangeTransparency(MeshRenderer mesh, float alpha)
+    //TODO: try sending gameobject instead of just meshrenderer
+    private IEnumerator ChangeTransparency(GameObject obj, float alpha)
     {
+        MeshRenderer mesh = obj.GetComponent<MeshRenderer>();
         Color Col = new Color();
         Col = mesh.material.color;
-        while (mesh.material.color.a-alpha > 0.1)
+        while (mesh.material.color.a != alpha)
         {
             Col.a = Mathf.Lerp(Col.a, alpha, 0.1f);
             mesh.material.color = Col;
-            Debug.Log(Col.a);
+            yield return new WaitForSeconds(0.01f);
+            //Debug.Log(Col);
         }
-        Col.a = Mathf.Lerp(Col.a, alpha, 0.1f);
-        mesh.material.color = Col;
         yield return new WaitForSeconds(0f);
     }
 }

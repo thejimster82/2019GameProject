@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 public class gameCamera : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class gameCamera : MonoBehaviour
     public Vector3 offset;
     private Camera cam;
     private Vector3[] rayChecks = new Vector3[3];
+
+    public float visionDistance = 2;
     public opacityController opacCtrlr;
     // Use this for initialization
     void Start()
@@ -26,20 +29,21 @@ public class gameCamera : MonoBehaviour
         if (target)
         {
             transform.position = Vector3.Lerp(transform.position, target.transform.position + offset, interpVelocity);
-            foreach (Vector3 rayDir in rayChecks)
+            Vector3 dirToPlayer = (target.transform.position - transform.position).normalized;
+            Collider[] transparentizeThese = Physics.OverlapCapsule(transform.position, target.transform.position - dirToPlayer * visionDistance, visionDistance);
+            Collider[] opaquenThese = Physics.OverlapCapsule(transform.position, target.transform.position - dirToPlayer * (visionDistance + 1), visionDistance + 1);
+            foreach (Collider col in opaquenThese)
             {
-                Vector3 screenPos = cam.WorldToScreenPoint(target.transform.position + rayDir);
-                Ray ray = cam.ScreenPointToRay(screenPos);
-                RaycastHit hit = new RaycastHit();
-                Physics.Raycast(ray.origin, ray.direction, out hit);
-                if (hit.collider != null && hit.collider.tag == "Scenery")
+                if (transparentizeThese.Contains(col))
                 {
-                    Debug.Log(hit.transform.name);
-                    opacCtrlr.Transparentize(hit.transform.gameObject);
-                    //TODO: change this when we switch to sprites
+                    opacCtrlr.Transparentize(col.transform.gameObject);
                 }
-                Debug.DrawRay(ray.origin, ray.direction * 50, Color.yellow);
+                else
+                {
+                    opacCtrlr.Opaquen(col.transform.gameObject);
+                }
             }
+            //Debug.DrawRay(transform.position, dirToPlayer);
         }
     }
     //TODO: make enemy not go right up to person when they have weapon
