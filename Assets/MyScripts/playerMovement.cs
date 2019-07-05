@@ -31,7 +31,6 @@ public class playerMovement : MonoBehaviour
     }
     void Update()
     {
-        // TODO: this
         if (movementEnabled == true)
         {
             if (Input.GetKey(KeyCode.W))
@@ -106,14 +105,21 @@ public class playerMovement : MonoBehaviour
     {
         movementEnabled = true;
     }
+
     public void setMovement(float speed)
     {
         moveSpeed = speed;
     }
+
     public Vector3 getPlayerDir()
     {
         return playerDir;
     }
+    public Vector3 getPlayerVelocity()
+    {
+        return ctrlr.velocity;
+    }
+
     public void pauseRotation()
     {
         rotationEnabled = false;
@@ -122,6 +128,7 @@ public class playerMovement : MonoBehaviour
     {
         rotationEnabled = true;
     }
+
     public void pauseDashing()
     {
         dashingEnabled = false;
@@ -130,6 +137,7 @@ public class playerMovement : MonoBehaviour
     {
         dashingEnabled = true;
     }
+
     public void nudgePlayer(float amt)
     {
         //TODO: make nudging actually perform the correct movement

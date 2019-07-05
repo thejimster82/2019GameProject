@@ -18,10 +18,15 @@ public class wepnAttacks : MonoBehaviour
 
     void Start()
     {
-        for (int i = 0; i < atkStatsList.Count; i++)
+        foreach (atkStats atk in atkStatsList)
         {
-            atkTable.Add(atkStatsList[i].getAtkName(), atkStatsList[i]);
+            atkTable.Add(atk.getAtkName(), atk);
         }
+    }
+
+    public atkStats chooseAtk()
+    {
+        return atkStatsList[0];
     }
 }
 
