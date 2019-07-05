@@ -10,6 +10,7 @@ public class NPC_Enemy : MonoBehaviour
     public Animator npcAnimator;
     public float lostDistance = 200f;
     public GameObject proyectilePrefab;
+    public GameObject target;
     delegate void InitState();
     delegate void UpdateState();
     delegate void EndState();
@@ -28,10 +29,18 @@ public class NPC_Enemy : MonoBehaviour
     public NPC_PatrolNode patrolNode;
     public float moveSpeedWhileAtk = 16f;
     public float atkDistance = 20f;
+    public gameCamera cam;
+    public List<NPC_EnemyState> attentiveStates;
+    public List<NPC_EnemyState> idleStates;
     // Use this for initialization
 
     void Start()
     {
+        idleStates.Add(NPC_EnemyState.IDLE_STATIC);
+        idleStates.Add(NPC_EnemyState.IDLE_ROAMER);
+        idleStates.Add(NPC_EnemyState.IDLE_PATROL);
+        attentiveStates.Add(NPC_EnemyState.INSPECT);
+        attentiveStates.Add(NPC_EnemyState.ATTACK);
         startingPos = transform.position;
         hashSpeed = Animator.StringToHash("Speed");
         SetWeapon(weaponType);
@@ -72,6 +81,14 @@ public class NPC_Enemy : MonoBehaviour
     {
         if (currentState != newState)
         {
+            if (attentiveStates.Contains(newState) && target)
+            {
+                target.GetComponent<playerBehavior>().gameCam.addToTargets(gameObject);
+            }
+            else if (idleStates.Contains(newState) && target)
+            {
+                target.GetComponent<playerBehavior>().gameCam.rmFromTargets(gameObject);
+            }
             if (_endState != null)
                 _endState();
             switch (newState)
@@ -294,6 +311,7 @@ public class NPC_Enemy : MonoBehaviour
             Physics.Raycast(transform.position, transform.forward, out hit, weaponRange, hitTestLayer);
             if (hit.collider != null && hit.collider.tag == "Player")
             {
+                target = hit.collider.gameObject;
                 SetState(NPC_EnemyState.ATTACK);
             }
         }
