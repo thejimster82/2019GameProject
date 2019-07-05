@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 public enum NPC_EnemyState { IDLE_STATIC, IDLE_ROAMER, IDLE_PATROL, INSPECT, ATTACK, FIND_WEAPON, KNOCKED_OUT, DEAD, NONE }
-public enum NPC_WeaponType { KNIFE, RIFLE, SHOTGUN }
+public enum NPC_WeaponType { SHIV, THORN, SPORES }
 public class NPC_Enemy : MonoBehaviour
 {
     public float inspectTimeout; //Once the npc reaches the destination, how much time unitl in goes back.
@@ -16,7 +16,7 @@ public class NPC_Enemy : MonoBehaviour
     InitState _initState;
     InitState _updateState;
     InitState _endState;
-    public NPC_WeaponType weaponType = NPC_WeaponType.KNIFE;
+    public NPC_WeaponType weaponType = NPC_WeaponType.SHIV;
     public NPC_EnemyState idleState = NPC_EnemyState.IDLE_ROAMER;
     NPC_EnemyState currentState = NPC_EnemyState.NONE;
     Vector3 targetPos, startingPos;
@@ -44,20 +44,20 @@ public class NPC_Enemy : MonoBehaviour
         npcAnimator.SetInteger("WeaponType", (int)weaponType);
         switch (weaponType)
         {
-            case NPC_WeaponType.KNIFE:
+            case NPC_WeaponType.SHIV:
                 weaponRange = 1.0f;
                 weaponActionTime = 0.2f;
-                weaponTime = 0.4f;
+                weaponTime = 1f;
                 break;
-            case NPC_WeaponType.RIFLE:
-                weaponRange = 20.0f;
+            case NPC_WeaponType.THORN:
+                weaponRange = 70.0f;
                 weaponActionTime = 0.025f;
-                weaponTime = 0.05f;
+                weaponTime = 0.8f;
                 break;
-            case NPC_WeaponType.SHOTGUN:
-                weaponRange = 20.0f;
+            case NPC_WeaponType.SPORES:
+                weaponRange = 40.0f;
                 weaponActionTime = 0.35f;
-                weaponTime = 0.75f;
+                weaponTime = 1f;
                 break;
         }
     }
@@ -205,7 +205,7 @@ public class NPC_Enemy : MonoBehaviour
         {
             if (idleMoving)
             {
-                navMeshAgent.Stop();
+                navMeshAgent.isStopped = true;
                 float waitTime = Random.Range(2.5f, 6.5f);
                 float randomTurnTime = waitTime / 2.0f;
                 idleRotateTimer.StartTimer(randomTurnTime);
@@ -275,7 +275,7 @@ public class NPC_Enemy : MonoBehaviour
         navMeshAgent.speed = moveSpeedWhileAtk;
         RaycastHit hit = new RaycastHit();
         Physics.Raycast(transform.position, transform.forward, out hit, weaponRange, hitTestLayer);
-        navMeshAgent.Resume();
+        navMeshAgent.isStopped = false;
         inspectTimer.StopTimer();
         inspectWait = false;
     }
@@ -288,7 +288,7 @@ public class NPC_Enemy : MonoBehaviour
             inspectTurnTimer.StartTimer(1.0f);
         }
         navMeshAgent.SetDestination(targetPos);
-        if (Vector3.Distance(transform.position, targetPos) < atkDistance)
+        if (Vector3.Distance(transform.position, targetPos) < weaponRange)
         {
             RaycastHit hit = new RaycastHit();
             Physics.Raycast(transform.position, transform.forward, out hit, weaponRange, hitTestLayer);
@@ -352,7 +352,7 @@ public class NPC_Enemy : MonoBehaviour
     {
         switch (weaponType)
         {
-            case NPC_WeaponType.KNIFE:
+            case NPC_WeaponType.SHIV:
                 RaycastHit[] hits = Physics.SphereCastAll(weaponPivot.position, 2.0f, weaponPivot.forward);
                 foreach (RaycastHit hit in hits)
                 {
@@ -362,11 +362,11 @@ public class NPC_Enemy : MonoBehaviour
                     }
                 }
                 break;
-            case NPC_WeaponType.RIFLE:
+            case NPC_WeaponType.THORN:
                 GameObject bullet = GameObject.Instantiate(proyectilePrefab, weaponPivot.position, weaponPivot.rotation) as GameObject;
                 bullet.transform.Rotate(0, Random.Range(-7.5f, 7.5f), 0);
                 break;
-            case NPC_WeaponType.SHOTGUN:
+            case NPC_WeaponType.SPORES:
                 for (int i = 0; i < 5; i++)
                 {
                     GameObject birdshot = GameObject.Instantiate(proyectilePrefab, weaponPivot.position, weaponPivot.rotation) as GameObject;
@@ -410,7 +410,7 @@ public class NPC_Enemy : MonoBehaviour
     }
 
     /* #endregion */
-	////////////////////////// PUBLIC FUNCTIONS //////////////////////////
+    ////////////////////////// PUBLIC FUNCTIONS //////////////////////////
     /* #region   */
     public void SetAlertPos(Vector3 newPos)
     {

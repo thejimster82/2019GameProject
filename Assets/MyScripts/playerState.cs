@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using InControl;
+// using InControl;
 
 public class playerState : MonoBehaviour
 {
@@ -13,7 +13,7 @@ public class playerState : MonoBehaviour
     void Start()
     {
         playerMover = GetComponent<playerMovement>();
-        var InputDevice = InputManager.ActiveDevice;
+        // var InputDevice = InputManager.ActiveDevice;
     }
 
     // Update is called once per frame

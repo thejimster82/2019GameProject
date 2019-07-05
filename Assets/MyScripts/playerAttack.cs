@@ -12,7 +12,8 @@ public class playerAttack : MonoBehaviour
     private atkStats currAtk;
     private int combo = 0;
     private float atkSpeed = 1;
-    private Coroutine currRoutine;
+    private Coroutine atkRoutine;
+    public gameCamera cam;
     private Dictionary<string, atkStats> atkTable = new Dictionary<string, atkStats>();
 
     // Start is called before the first frame update
@@ -29,33 +30,23 @@ public class playerAttack : MonoBehaviour
         {
             if (!isAttacking)
             {
-                currRoutine = StartCoroutine(Attack("melee", "atk1"));
+                atkRoutine = StartCoroutine(Attack("melee", "atk1"));
                 Debug.Log(1);
             }
             else if (isAttacking && currAtk.getAtkName() == "atk1" && combo > 0)
             {
                 combo -= 1;
-                StopCoroutine(currRoutine);
-                currRoutine = StartCoroutine(Attack("melee", "atk2"));
+                StopCoroutine(atkRoutine);
+                atkRoutine = StartCoroutine(Attack("melee", "atk2"));
                 Debug.Log(2);
             }
             else if (isAttacking && currAtk.getAtkName() == "atk2" && combo > 0)
             {
                 combo -= 1;
-                StopCoroutine(currRoutine);
-                currRoutine = StartCoroutine(Attack("melee", "atk3"));
+                StopCoroutine(atkRoutine);
+                atkRoutine = StartCoroutine(Attack("melee", "atk3"));
                 Debug.Log(3);
             }
-            //TODO: asdasd
-            // else
-            // {
-            //     //restart loop
-            //     combo -= 1;
-            //     StopCoroutine(currRoutine);
-            //     currRoutine = StartCoroutine(Attack("melee", "atk1"));
-            //     Debug.Log(1);
-            // }
-
         }
     }
 
@@ -69,7 +60,8 @@ public class playerAttack : MonoBehaviour
         mover.pauseDashing();
         isAttacking = true;
         currAtk = atkTable[atkName];
-        if(currAtk.nudge){
+        if (currAtk.nudge)
+        {
             mover.nudgePlayer(currAtk.nudgeAmt);
         }
         mover.setMovement(currAtk.moveSpeedWhileAtking);
@@ -79,6 +71,10 @@ public class playerAttack : MonoBehaviour
         yield return new WaitForSeconds(currAtk.hitDelay);
 
         StartCoroutine(AttackZone(currAtk.atkObject));
+        if (currAtk.shake)
+        {
+            cam.ToggleShake(currAtk.shakeAmt);
+        }
 
         yield return new WaitForSeconds((currAtk.atkLength - currAtk.hitDelay) * 1 / 2 * (1 / atkSpeed));
 
@@ -99,7 +95,6 @@ public class playerAttack : MonoBehaviour
         currAtkObj.transform.parent = gameObject.transform;
         yield return new WaitForSeconds(0.01f);
         Destroy(currAtkObj);
-
     }
 
     private void equipWepn(GameObject wepn)

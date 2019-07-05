@@ -12,12 +12,14 @@ public class gameCamera : MonoBehaviour
     private Vector3[] rayChecks = new Vector3[3];
     public float visionDistance = 2;
     public opacityController opacCtrlr;
+    public cameraShake shaker;
     //private LayerMask sceneryMask = LayerMask.GetMask("Scenery");
     // Use this for initialization
     void Start()
     {
         offset = transform.position - target.transform.position;
         cam = GetComponent<Camera>();
+        shaker = GetComponent<cameraShake>();
         rayChecks[0] = new Vector3(-3, 0, 3);
         rayChecks[1] = new Vector3(3, 0, 3);
         rayChecks[2] = new Vector3(0, 0, 0);
@@ -49,17 +51,10 @@ public class gameCamera : MonoBehaviour
             //Debug.DrawRay(transform.position, dirToPlayer);
         }
     }
-    //TODO: make enemy not go right up to person when they have weapon
-    //TODO: make walls change transparency when they are in front of / around you
-    //TODO: make attack objects affect player
-    //TODO: make player attacks affect enemy
     public void ToggleShake(float shakeTime)
     {
-        //this.shakeTimer.StartTimer (shakeTime);
-        //myslf.shakeActive = toggleValue;
-        //if (!toggleValue) {
-        //	myslf.targetCamera.transform.localPosition=myslf.camLocalPos;
-        //}
+        shaker.enabled = true;
+        shaker.AddShakeTime(0.5f);
     }
 
     public void zoomIn()

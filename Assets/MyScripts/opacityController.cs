@@ -5,37 +5,34 @@ using UnityEngine;
 public class opacityController : MonoBehaviour
 {
     Color matCol = new Color();
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    Dictionary<int, Coroutine> affectedObjs = new Dictionary<int, Coroutine>();
 
     public void Transparentize(GameObject obj)
     {
-        if (Mathf.Abs(obj.GetComponent<MeshRenderer>().material.color.a - 0.15f) > .01f)
-        {
-            Debug.Log("transparentize");
-            StartCoroutine(ChangeTransparency(obj, 0.15f));
-        }
+        // Debug.Log("transparentize");
+        ChangeTransparency(obj, 0.15f);
     }
 
     public void Opaquen(GameObject obj)
     {
-        if (Mathf.Abs(obj.GetComponent<MeshRenderer>().material.color.a - 1) > .01f)
+        // Debug.Log("opaquen");
+        ChangeTransparency(obj, 1);
+    }
+    public void ChangeTransparency(GameObject obj, float alpha)
+    {
+        if (Mathf.Abs(obj.GetComponent<MeshRenderer>().material.color.a - alpha) > .01f)
         {
-            Debug.Log("opaquen");
-            StartCoroutine(ChangeTransparency(obj, 1f));
+            int instanceID = obj.GetInstanceID();
+            if (affectedObjs.ContainsKey(instanceID))
+            {
+                StopCoroutine(affectedObjs[instanceID]);
+                affectedObjs.Remove(instanceID);
+            }
+            affectedObjs.Add(instanceID, StartCoroutine(ChangeTransparencyCR(obj, alpha)));
         }
     }
     //TODO: try sending gameobject instead of just meshrenderer
-    private IEnumerator ChangeTransparency(GameObject obj, float alpha)
+    private IEnumerator ChangeTransparencyCR(GameObject obj, float alpha)
     {
         MeshRenderer mesh = obj.GetComponent<MeshRenderer>();
         Color Col = new Color();

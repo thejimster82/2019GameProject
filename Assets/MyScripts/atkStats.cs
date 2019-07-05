@@ -11,6 +11,9 @@ public class atkStats : MonoBehaviour
     public bool nudge;
     public float nudgeAmt;
     public GameObject atkObject;
+    public Animation atkAnim;
+    public bool shake;
+    public float shakeAmt;
     public string getAtkName()
     {
         return gameObject.name;
