@@ -5,5 +5,5 @@ using UnityEngine;
 public class wepnStats : MonoBehaviour
 {
     public float dmg;
-
+    public float critChance;
 }

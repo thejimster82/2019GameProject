@@ -32,43 +32,52 @@ public class playerAttack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonUp(0))
+        if (!isAttacking)
         {
-            atkInfo = equippedWepns[0].chooseAtk(cb, 0);
-            currAtk = atkInfo.Item1;
-            cb = atkInfo.Item2;
-            if (atkRoutine != null)
+            if (Input.GetMouseButtonUp(0))
             {
-                StopCoroutine(atkRoutine);
+                isAttacking = true;
+                atkInfo = equippedWepns[0].chooseAtk(cb, 0);
+                currAtk = atkInfo.Item1;
+                cb = atkInfo.Item2;
+                if (atkRoutine != null)
+                {
+                    StopCoroutine(atkRoutine);
+                }
+                if (cb.mods.Count > cb.numAtks)
+                {
+                    atkRoutine = StartCoroutine(Attack(currAtk, cb.mods[cb.numAtks], equippedWepns[1]));
+                }
+                else
+                {
+                    atkRoutine = Attack(currAtk, equippedWepns[0]);
+                }
             }
-            if (cb.mods.Count > cb.numAtks)
+            if (Input.GetMouseButtonUp(1))
             {
-                atkRoutine = StartCoroutine(Attack(currAtk, cb.mods[cb.numAtks], equippedWepns[1]));
+                isAttacking = true;
+                atkInfo = equippedWepns[1].chooseAtk(cb, 1);
+                currAtk = atkInfo.Item1;
+                cb = atkInfo.Item2;
+                if (atkRoutine != null)
+                {
+                    StopCoroutine(atkRoutine);
+                }
+                if (cb.mods.Count > cb.numAtks)
+                {
+                    atkRoutine = StartCoroutine(Attack(currAtk, cb.mods[cb.numAtks], equippedWepns[1]));
+                }
+                else
+                {
+                    atkRoutine = Attack(currAtk, equippedWepns[1]);
+                }
             }
-            else
-            {
-                atkRoutine = StartCoroutine(Attack(currAtk, null, equippedWepns[0]));
-            }
+            // if (Input.GetMouseButton(0))
+            // {
+            //     isAttacking = true;
+            // }
         }
-        if (Input.GetMouseButtonUp(1))
-        {
 
-            atkInfo = equippedWepns[1].chooseAtk(cb, 1);
-            currAtk = atkInfo.Item1;
-            cb = atkInfo.Item2;
-            if (atkRoutine != null)
-            {
-                StopCoroutine(atkRoutine);
-            }
-            if (cb.mods.Count > cb.numAtks)
-            {
-                atkRoutine = StartCoroutine(Attack(currAtk, cb.mods[cb.numAtks], equippedWepns[1]));
-            }
-            else
-            {
-                atkRoutine = Attack(currAtk, equippedWepns[1]);
-            }
-        }
     }
 
     public bool getAtkStatus()
@@ -83,7 +92,6 @@ public class playerAttack : MonoBehaviour
     public IEnumerator Attack(atkStats atk, List<atkModifier> mods, wepnAttacks wepn)
     {
         mover.pauseDashing();
-        isAttacking = true;
         if (currAtk.nudge)
         {
             mover.nudgePlayer(currAtk.nudgeAmt);
@@ -100,13 +108,9 @@ public class playerAttack : MonoBehaviour
             cam.ToggleShake(currAtk.shakeAmt);
         }
 
-        yield return new WaitForSeconds((currAtk.atkLength - currAtk.hitDelay) * 1 / 2 * (1 / atkSpeed));
-
+        yield return new WaitForSeconds((currAtk.atkLength - currAtk.hitDelay) * (1 / atkSpeed));
         mover.setMovement(mover.defaultMoveSpeed);
         mover.resumeDashing();
-
-        yield return new WaitForSeconds((currAtk.atkLength - currAtk.hitDelay) * 1 / 2 * (1 / atkSpeed));
-
         isAttacking = false;
     }
 

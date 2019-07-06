@@ -4,5 +4,6 @@ using UnityEngine;
 
 public class atkModifier : MonoBehaviour
 {
-    int wepAffected = 0;
+    List<int> wepsAffected;
+    bool crit = false;
 }

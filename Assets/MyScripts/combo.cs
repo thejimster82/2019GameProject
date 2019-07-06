@@ -22,8 +22,11 @@ public class combo : MonoBehaviour
             mods[i] = modifiers;
         }
     }
-    public void applyMod(atkModifier mod)
+    public void addMod(atkModifier mod)
     {
-        
+    }
+    public atkStats applyMod(atkStats stats, List<atkModifier> mods)
+    {
+        return stats;
     }
 }

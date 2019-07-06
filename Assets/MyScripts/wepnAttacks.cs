@@ -33,7 +33,9 @@ public class wepnAttacks : MonoBehaviour
             cb.numAtks = newAtkNum;
             atkStats newAtk = atkStatsList[newAtkNum];
             cb.atks.Add(newAtk);
-            cb.applyMod(newAtk.mod);
+            cb.addMod(newAtk.mod);
+            //atkStats newAtkModded = cb.applyMod(newAtk, cb.mods[cb.numAtks]);
+            //return Tuple.Create(newAtkModded, cb);
             return Tuple.Create(newAtk, cb);
         }
         else

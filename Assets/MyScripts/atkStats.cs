@@ -14,7 +14,7 @@ public class atkStats : MonoBehaviour
     public Animation atkAnim;
     public bool shake;
     public float shakeAmt;
-    public atkModifier mod = new atkModifier();
+    public atkModifier mod;
     public string getAtkName()
     {
         return gameObject.name;
