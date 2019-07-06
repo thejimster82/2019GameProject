@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class wepnAttacks : MonoBehaviour
 {
@@ -24,9 +25,25 @@ public class wepnAttacks : MonoBehaviour
         }
     }
 
-    public atkStats chooseAtk()
+    public Tuple<atkStats, combo> chooseAtk(combo cb, int wepNum)
     {
-        return atkStatsList[0];
+        if (cb.numAtks + 1 < atkStatsList.Count)
+        {
+            int newAtkNum = cb.numAtks + 1;
+            cb.numAtks = newAtkNum;
+            atkStats newAtk = atkStatsList[newAtkNum];
+            cb.atks.Add(newAtk);
+            cb.applyMod(newAtk.mod);
+            return Tuple.Create(newAtk, cb);
+        }
+        else
+        {
+            cb.numAtks = 0;
+            cb.resetModifiers();
+            cb.atks.Clear();
+            cb.atks.Add(atkStatsList[0]);
+            return Tuple.Create(atkStatsList[0], cb);
+        }
     }
 }
 
