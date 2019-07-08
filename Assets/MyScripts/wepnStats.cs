@@ -4,6 +4,5 @@ using UnityEngine;
 
 public class wepnStats : MonoBehaviour
 {
-    public float dmg;
-    public float critChance;
+    //different types of weapons have different stats, extend this class
 }
